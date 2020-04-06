@@ -14,8 +14,18 @@ const dbMethods = {
       }
     });
   },
-  async query() {
-
+  queryItem(tableName, searchKey, searchValue) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const dataBase = new DataBase();
+        dataBase.createPool();
+        const queryResult = await dataBase.queryItem(tableName, searchKey, searchValue);
+        dataBase.destroyPool();
+        resolve(queryResult);
+      } catch (err) {
+        reject(err);
+      }
+    });
   }
 }
 

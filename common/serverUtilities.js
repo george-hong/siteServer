@@ -1,5 +1,8 @@
 //返回各种状态字符串
 const createResponseData = (code, data = null) => {
+  console.log('data err');
+  console.log(data);
+  
   const dealResult = {
     code,
     data,
@@ -19,6 +22,11 @@ const createResponseData = (code, data = null) => {
     case 500:
       // 服务异常
       dealResult.message = 'server-error';
+      dealResult.data = null;
+      dealResult.errDetail = String(data);
+      console.log('--------------------- err info ---------------------');
+      console.log(data);
+      
       break;
     default: dealResult.message = '';
   }

@@ -20,12 +20,26 @@ const baseMethods = {
         sql: `${this.insertKeyword} ${tableName}(${keys.join(',')}) ${this.valuesKeyword}(${keys.map(() => '?').join(',')})`,
         values,
       };
-      console.log('insertConfig');
-      console.log(insertConfig);
       this.pool.query(insertConfig, (err, result) => {
         if (err) reject(err);
         else resolve(result);
-      })
+      });
+    });
+  },
+  queryItem(tableName, key, value) {
+    return new Promise((resolve, reject) => {
+      if (!this.pool) {
+        this.createPool();
+      }
+      const insertConfig = {
+        // TODO 这里应给查询条件提供一个配置项
+        sql: `${this.selectKeyword} id ${this.fromKeyword} ${tableName} ${this.whereKeyword} ${key} = '${value}' ${this.limitKeyword} 1`,
+        timeout: 90000,
+      };
+      this.pool.query(insertConfig.sql, (err, results, fields) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
     });
   },
   destroyPool() {
@@ -39,7 +53,9 @@ const keywordConfig = {
   updateKeyword: 'UPDATE',
   setKeyword: 'SET',
   whereKeyword: 'WHERE',
-  valuesKeyword: 'VALUES'
+  valuesKeyword: 'VALUES',
+  fromKeyword: 'FROM',
+  limitKeyword: 'LIMIT'
 };
 Object.assign(dataBasePrototype, baseMethods);
 
