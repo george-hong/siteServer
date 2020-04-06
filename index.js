@@ -19,7 +19,7 @@ app.all('*',function(req,res,next){
 })
 
 app.use(apiRouter);
-app.use(express.static(path.join(__dirname, '../app')));  // 静态资源
+app.use(express.static(path.join(__dirname, './app')));  // 静态资源
 
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
