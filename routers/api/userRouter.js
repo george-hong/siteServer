@@ -25,4 +25,17 @@ userRouter.get('/checkAccountIsRepeat', (req, res, next) => {
   })
 });
 
+// 登录 登录成功返回账号信息，否则返回null
+userRouter.post('/login', (req, res, next) => {
+  const { body } = req;
+  userHandler.login(body, req).then(result => {
+    const resultToSend = {
+      accountInfo: result[0] || null,
+    };
+    res.send(createResponseData(200, resultToSend));
+  }, err => {
+    res.send(createResponseData(500, err));
+  })
+});
+
 module.exports = userRouter;

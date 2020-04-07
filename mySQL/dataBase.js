@@ -26,15 +26,28 @@ const baseMethods = {
       });
     });
   },
-  queryItem(tableName, key, value) {
+  queryItem(tableName, searchCondition, showCondition = 'id') {
+    // tableName 查询的表名称
+    // searchCondition = { key: value } 需要查询的条件
+    // showCondition 查询成功后需要展示的内容
     return new Promise((resolve, reject) => {
       if (!this.pool) {
         this.createPool();
       }
+      const { fields } = searchCondition;
+      let searchSentence = '';
+      if (fields) {
+        const conditions = Object.entries(fields).map(group => {
+          const [key, value] = group;
+          return `${key} = '${value}'`;
+        }).join(` ${this.andKeyword} `);
+        searchSentence = `${this.whereKeyword} ${conditions}`
+      };
+      
+
       const insertConfig = {
         // TODO 这里应给查询条件提供一个配置项
-        sql: `${this.selectKeyword} id ${this.fromKeyword} ${tableName} ${this.whereKeyword} ${key} = '${value}' ${this.limitKeyword} 1`,
-        timeout: 90000,
+        sql: `${this.selectKeyword} ${showCondition} ${this.fromKeyword} ${tableName} ${searchSentence || ''} ${this.limitKeyword} 1`,
       };
       this.pool.query(insertConfig.sql, (err, results, fields) => {
         if (err) reject(err);
@@ -55,7 +68,8 @@ const keywordConfig = {
   whereKeyword: 'WHERE',
   valuesKeyword: 'VALUES',
   fromKeyword: 'FROM',
-  limitKeyword: 'LIMIT'
+  limitKeyword: 'LIMIT',
+  andKeyword: 'AND'
 };
 Object.assign(dataBasePrototype, baseMethods);
 
