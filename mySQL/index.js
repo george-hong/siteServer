@@ -1,4 +1,4 @@
-const DataBase = require('./dataBase');
+import DataBase from './dataBase';
 
 const dbMethods = {
   insert(tableName, dataToInsert) {

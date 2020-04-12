@@ -1,5 +1,5 @@
-const mysql = require('mysql');
-const { sqlLoginInfo } = require('./config');
+import mysql from 'mysql';
+import { sqlLoginInfo } from './config';
 // 创建空原型
 const dataBasePrototype = Object.create({});
 // 原型方法

@@ -1,6 +1,7 @@
-const express = require('express');
-const path = require('path');
-const apiRouter = require('./routers');
+import express from 'express';
+import path from 'path';
+import apiRouter from './routers';
+
 const app = express();
 
 const port = 3000;
