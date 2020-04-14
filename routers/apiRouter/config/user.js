@@ -11,6 +11,10 @@ const routerConfig = {
   '/login': { // 登录
     method: 'post',
     actions: ['user/login'],
+  },
+  '/test': { // 测试
+    method: 'post',
+    actions: ['base/checkAndUpdateToken', 'user/test'],
   }
 };
 

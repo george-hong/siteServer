@@ -14,8 +14,8 @@ const parseRequestData = (request, response, next) => {
   }
   request[requestParamsField] = requestParams;
   response[responseContainerField] = {
-    code: 500,
-    data: null,
+    status: 404,
+    data: '没有找到对应资源',
   };
   next();
 };

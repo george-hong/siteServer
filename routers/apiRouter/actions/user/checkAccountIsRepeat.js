@@ -7,11 +7,12 @@ const checkAccountIsRepeat = async(request, response, next) => {
   const accountField = 'account';
   try {
     const queryResult = await mySQL.queryItem(tableNames.user, {
-      fields: { [accountField]: requestParams[accountField] }
+      fields: { [accountField]: requestParams[accountField] },
+      limit: 1,
     });
     const isExist = !!queryResult && !!queryResult.length;
 
-    responseContainer.code = 200;
+    responseContainer.status = 200;
     responseContainer.data = { isExist };
   } catch (err) {
     responseContainer.data = err;

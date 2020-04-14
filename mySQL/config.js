@@ -8,7 +8,9 @@ const sqlLoginInfo = {
 };
 
 const tableNames = {
-  user: 'user', // 用户表名称
+  user: 'user',    // 用户表名称
+  token: 'token',  // token表名称
+  article: 'article',  // 文章表名称
 };
 
 const responseContainerField = 'body'; // response上用于暂存响应内容的字段

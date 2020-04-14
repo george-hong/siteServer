@@ -2,13 +2,14 @@ import mySQL from '../../../../mySQL/index';
 import { tableNames, requestParamsField, responseContainerField } from '../../../../mySQL/config';
 import { extractFieldsAsAObject } from '../../../utilities/serverUtilities';
 
-const checkAccountIsRepeat = async(request, response, next) => {
+const editArticle = async(request, response, next) => {
   const { [requestParamsField]: requestParams } = request;
   const { [responseContainerField]: responseContainer } = response;
-  const signFields = ['account', 'password', 'userName'];
-  const signData = extractFieldsAsAObject(requestParams, signFields);
+  const fields = ['title', 'content', 'author', 'authorId'];
+  const dataToInsert = extractFieldsAsAObject(requestParams, fields);
+  dataToInsert.createTime = dataToInsert.updateTime = Date.now();
   try {
-    const insertResult = await mySQL.insert(tableNames.user, signData);
+    const insertResult = await mySQL.insert(tableNames.article, dataToInsert);
     responseContainer.status = 200;
     responseContainer.data = insertResult;
   } catch (err) {
@@ -17,4 +18,4 @@ const checkAccountIsRepeat = async(request, response, next) => {
   next();
 };
 
-export default checkAccountIsRepeat;
+export default editArticle;

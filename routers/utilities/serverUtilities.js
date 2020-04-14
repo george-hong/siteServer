@@ -1,10 +1,13 @@
 //返回各种状态字符串
-const createResponseData = (code, data = null) => {
+const createResponseData = (status, data = null) => {
   const dealResult = {
-    code,
-    data,
+    status: 200,
+    body: {
+      data,
+      status,
+    }
   };
-  switch (code) {
+  switch (status) {
     case 200:
       // 成功
       dealResult.message = 'success';
@@ -12,20 +15,29 @@ const createResponseData = (code, data = null) => {
     case 302:
       dealResult.message = 'need-login';
       break;
+    case 401:
+        // 没有权限
+        dealResult.message = 'token-expired';
+        break;
     case 403:
       // 没有权限
-      dealResult.message = 'forbbiden';
+      dealResult.message = 'forbidden';
       break;
+    case 404:
+        // 没有对应接口
+        dealResult.message = 'bad-request';
+        break;
     case 500:
       // 服务异常
       dealResult.message = 'server-error';
-      dealResult.data = null;
-      dealResult.errDetail = String(data);
-      console.log('--------------------- err info ---------------------');
-      console.log(data);
-      
       break;
     default: dealResult.message = '';
+  }
+  if (status !== 200) {
+    dealResult.body.data = null;
+    dealResult.body.errDetail = String(data);
+    console.log('--------------------- err info ---------------------');
+    console.log(data);
   }
   return dealResult;
 };
