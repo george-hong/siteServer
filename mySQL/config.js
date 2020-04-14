@@ -7,6 +7,18 @@ const sqlLoginInfo = {
   database : 'site',
 };
 
+const tableNames = {
+  user: 'user',    // 用户表名称
+  token: 'token',  // token表名称
+  article: 'article',  // 文章表名称
+};
+
+const responseContainerField = 'body'; // response上用于暂存响应内容的字段
+const requestParamsField = 'requestParams'; // 请求上用于统一暂存请求参数的字段
+
 module.exports = {
-  sqlLoginInfo
+  sqlLoginInfo,
+  tableNames,
+  responseContainerField,
+  requestParamsField,
 };

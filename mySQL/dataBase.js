@@ -1,5 +1,5 @@
-const mysql = require('mysql');
-const { sqlLoginInfo } = require('./config');
+import mysql from 'mysql';
+import { sqlLoginInfo } from './config';
 // 创建空原型
 const dataBasePrototype = Object.create({});
 // 原型方法
@@ -20,6 +20,9 @@ const baseMethods = {
         sql: `${this.insertKeyword} ${tableName}(${keys.join(',')}) ${this.valuesKeyword}(${keys.map(() => '?').join(',')})`,
         values,
       };
+      console.log('------------------ insert ----------------');
+      console.log(insertConfig);
+      
       this.pool.query(insertConfig, (err, result) => {
         if (err) reject(err);
         else resolve(result);
@@ -28,28 +31,39 @@ const baseMethods = {
   },
   queryItem(tableName, searchCondition, showCondition = 'id') {
     // tableName 查询的表名称
-    // searchCondition = { key: value } 需要查询的条件
+    // searchCondition = { fields: { key, value }, orderBy} 需要查询的条件
     // showCondition 查询成功后需要展示的内容
     return new Promise((resolve, reject) => {
       if (!this.pool) {
         this.createPool();
       }
-      const { fields } = searchCondition;
+      //    查询字段 排序字段 限制数量 排序顺序asc/desc
+      const { fields, order, limit, orderDirection } = searchCondition;
+      console.log('searchCondition');
+      console.log(searchCondition);
+      
       let searchSentence = '';
       if (fields) {
         const conditions = Object.entries(fields).map(group => {
           const [key, value] = group;
           return `${key} = '${value}'`;
         }).join(` ${this.andKeyword} `);
-        searchSentence = `${this.whereKeyword} ${conditions}`
+        searchSentence = ` ${this.whereKeyword} ${conditions}`
       };
+      let orderSentence = '';
+      if (order) orderSentence = ` ${this.orderByKeyword} ${order}${orderDirection ? ` ${orderDirection}`: ''}`;
+      let limitSentence = '';
+      if (limit) limitSentence = ` ${this.limitKeyword} ${limit}`;
       
 
-      const insertConfig = {
+      const queryConfig = {
         // TODO 这里应给查询条件提供一个配置项
-        sql: `${this.selectKeyword} ${showCondition} ${this.fromKeyword} ${tableName} ${searchSentence || ''} ${this.limitKeyword} 1`,
+        sql: `${this.selectKeyword} ${showCondition} ${this.fromKeyword} ${tableName}${searchSentence}${orderSentence}${limitSentence}`,
       };
-      this.pool.query(insertConfig.sql, (err, results, fields) => {
+      console.log('------- queryItem ------------------')
+      console.log(queryConfig.sql);
+      
+      this.pool.query(queryConfig.sql, (err, results, fields) => {
         if (err) reject(err);
         else resolve(results);
       });
@@ -69,7 +83,8 @@ const keywordConfig = {
   valuesKeyword: 'VALUES',
   fromKeyword: 'FROM',
   limitKeyword: 'LIMIT',
-  andKeyword: 'AND'
+  andKeyword: 'AND',
+  orderByKeyword: 'ORDER BY',
 };
 Object.assign(dataBasePrototype, baseMethods);
 
