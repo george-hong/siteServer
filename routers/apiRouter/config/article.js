@@ -4,9 +4,13 @@ const routerConfig = {
     method: 'post',
     actions: ['base/checkAndUpdateToken', 'article/edit'],
   },
-  '/detail': { // 编辑文章
+  '/detail': { // 编辑详情
     method: 'get',
-    actions: ['base/checkAndUpdateToken', 'article/detail'],
+    actions: ['article/detail'],
+  },
+  '/list': { // 文章列表
+    method: 'get',
+    actions: ['article/list'],
   }
 };
 

@@ -27,7 +27,10 @@ const checkAccountIsRepeat = async(request, response, next) => {
         secret,
         expiresTime,
       };
-      token = tokenValue;
+      token = {
+        tokenValue,
+        expiresTime,
+      };
       await mySQL.insert(tableNames.token, tokenInfo);
       queryResult.userId = queryResult.id;
       delete queryResult.id;
