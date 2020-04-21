@@ -7,9 +7,9 @@ const editArticle = async(request, response, next) => {
   const { [responseContainerField]: responseContainer } = response;
   const fields = ['title', 'content', 'author', 'authorId'];
   const dataToInsert = extractFieldsAsAObject(requestParams, fields);
-  dataToInsert.createTime = dataToInsert.updateTime = Date.now();
+  dataToInsert.createTime = dataToInsert.updateTime = Date.now().valueOf();
   try {
-    const insertResult = await mySQL.insert(tableNames.article, dataToInsert);
+    const insertResult = await mySQL.insertThenBackId(tableNames.article, dataToInsert);
     responseContainer.status = 200;
     responseContainer.data = insertResult;
   } catch (err) {

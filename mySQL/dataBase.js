@@ -1,5 +1,6 @@
 import mysql from 'mysql';
 import { sqlLoginInfo } from './config';
+import keywordConfig from './keywordConfig';
 // 创建空原型
 const dataBasePrototype = Object.create({});
 // 原型方法
@@ -29,7 +30,8 @@ const baseMethods = {
       });
     });
   },
-  queryItem(tableName, searchCondition, showCondition = 'id') {
+  
+  query(tableName, searchCondition, showCondition = 'id') {
     // tableName 查询的表名称
     // searchCondition = { fields: { key, value }, orderBy} 需要查询的条件
     // showCondition 查询成功后需要展示的内容
@@ -60,7 +62,7 @@ const baseMethods = {
         // TODO 这里应给查询条件提供一个配置项
         sql: `${this.selectKeyword} ${showCondition} ${this.fromKeyword} ${tableName}${searchSentence}${orderSentence}${limitSentence}`,
       };
-      console.log('------- queryItem ------------------')
+      console.log('------------------ SQL语句 ------------------')
       console.log(queryConfig.sql);
       
       this.pool.query(queryConfig.sql, (err, results, fields) => {
@@ -69,23 +71,30 @@ const baseMethods = {
       });
     });
   },
+  queryItem(tableName, searchCondition, showCondition = 'id') {
+    return this.query(tableName, searchCondition, showCondition);
+  },
+  // sql分页查询
+  queryList(tableName, searchCondition, showCondition = 'id') {
+    // 解析page和pageSize字段组合成limit
+    const conditionsCopy = JSON.parse(JSON.stringify(searchCondition));
+    const {
+      page = 1,
+      pageSize = 10,
+      orderDirection,
+      order,
+    } = conditionsCopy;
+    conditionsCopy.limit = `${(page - 1) * pageSize}, ${pageSize}`;           // 默认第一页的页码为1
+    conditionsCopy.order = order ? order : 'id'; // 默认id倒序查询
+    conditionsCopy.orderDirection = orderDirection ? orderDirection : 'desc'; // 默认id倒序查询
+
+    return this.query(tableName, conditionsCopy, showCondition);
+  },
   destroyPool() {
     if (this.pool) this.pool.end();
   }
 };
-const keywordConfig = {
-  insertKeyword: 'INSERT',
-  selectKeyword: 'SELECT',
-  deleteKeyword: 'DELETE',
-  updateKeyword: 'UPDATE',
-  setKeyword: 'SET',
-  whereKeyword: 'WHERE',
-  valuesKeyword: 'VALUES',
-  fromKeyword: 'FROM',
-  limitKeyword: 'LIMIT',
-  andKeyword: 'AND',
-  orderByKeyword: 'ORDER BY',
-};
+
 Object.assign(dataBasePrototype, baseMethods);
 
 const DataBase = function() {
