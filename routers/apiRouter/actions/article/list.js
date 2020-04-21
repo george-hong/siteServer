@@ -8,8 +8,10 @@ const queryArticle = async(request, response, next) => {
   const fields = ['page', 'pageSize'];
   const queryObject = extractFieldsAsAObject(requestParams, fields);
   try {
-    const queryResult = await mySQL.queryItem(tableNames.article, {
-      limit: queryObject.pageSize,
+    const { page, pageSize } = queryObject;
+    const queryResult = await mySQL.queryList(tableNames.article, {
+      page,
+      pageSize,
     }, '*');
     responseContainer.status = 200;
     responseContainer.data = queryResult;
