@@ -12,6 +12,7 @@
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-stage-3": "^6.24.1",
+    "connect-history-api-fallback": "^1.6.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1"
