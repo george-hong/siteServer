@@ -17,4 +17,5 @@
 > 在app中配置'Access-Control-Allow-Headers'的内容
 
 ## 状态码设置
-> 1. 401 token失效
+> 1. 200 请求成功
+> 2. 401 token失效
