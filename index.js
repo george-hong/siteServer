@@ -1,10 +1,28 @@
 import express from 'express';
 import path from 'path';
+import history from  'connect-history-api-fallback';
 import apiRouter from './routers';
 
 const app = express();
-
 const port = 80;
+// 重置index.html资源文件路径的方法
+const organizeFilePath = context => {
+  const pathArray = context.parsedUrl.pathname.split('/');
+  const fileName = pathArray[pathArray.length - 1];
+  return '/' + fileName;
+}
+const historyConfig = {
+  rewrites: [
+    {
+      from: /main-.*\.(css|js)$/,
+      to: organizeFilePath
+    },
+    {
+      from: /.(ttf|woff)$/,
+      to: organizeFilePath
+    },
+  ]
+}
 
 app.all('*',function(req,res,next){
   //设置允许跨域的域名，*代表允许任意域名跨域
@@ -20,6 +38,7 @@ app.all('*',function(req,res,next){
 })
 
 app.use(apiRouter);
+app.use(history(historyConfig));
 app.use(express.static(path.join(__dirname, './app')));  // 静态资源
 
 
