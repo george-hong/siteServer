@@ -42,4 +42,4 @@ app.use(history(historyConfig));
 app.use(express.static(path.join(__dirname, './app')));  // 静态资源
 
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`Application running on port ${port}!`));
