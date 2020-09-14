@@ -1,6 +1,7 @@
 import userRouterConfig from './config/user';
 import articleRouterConfig from './config/article';
 import searchRouterConfig from './config/search';
+import uploadRouterConfig from './config/upload';
 
 // 自动添加前缀
 const parseModuleRouterConfig = (moduleRouterConfig) => {
@@ -19,6 +20,7 @@ const routerConfig = [
   ...parseModuleRouterConfig(userRouterConfig),
   ...parseModuleRouterConfig(articleRouterConfig),
   ...parseModuleRouterConfig(searchRouterConfig),
+  ...parseModuleRouterConfig(uploadRouterConfig),
 ];
 
 export default routerConfig;
