@@ -54,7 +54,7 @@ const dbMethods = {
                 dataBase.destroyPool();
                 console.log('查询结果---', queryResult)
                 resolve({
-                    data: queryResult,
+                    content: queryResult,
                     total: total[0][totalField],
                     page: Number(page),
                     pageSize: Number(pageSize),
@@ -73,7 +73,7 @@ const dbMethods = {
                 console.log('查询结果', queryResult)
                 dataBase.destroyPool();
                 resolve({
-                    data: queryResult
+                    content: queryResult
                 });
             } catch (err) {
                 reject(err);

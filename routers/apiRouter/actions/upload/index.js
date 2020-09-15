@@ -3,12 +3,11 @@ import fs from 'fs';
 import mySQL from '../../../../mySQL/index';
 import formidable from 'formidable';
 import moment from 'moment';
-import {requestParamsField, responseContainerField, tableNames} from '../../../../mySQL/config';
+import { responseContainerField, tableNames } from '../../../../mySQL/config';
 import { getRandomCharts } from '../../../utilities/methods';
 import globalConfig from '../../../../config/config';
 
 const search = async (request, response, next) => {
-    const {[requestParamsField]: requestParams} = request;
     const {[responseContainerField]: responseContainer} = response;
     try {
         const form = new formidable.IncomingForm();
@@ -21,6 +20,7 @@ const search = async (request, response, next) => {
                 if (err) {
                     reject(err);
                 } else {
+                    // 生成文件名、保存路径等信息
                     const time = moment().format('YYYYMMDDHHmmss');
                     let { path: saveFolder, uploaderId } = fields;
                     saveFolder = saveFolder ? `/${saveFolder}` : '';
@@ -37,8 +37,8 @@ const search = async (request, response, next) => {
                                 fileName,
                                 url: `${request.headers.origin}${globalConfig.serverReadUploadFileRootFolder}${saveFolder}/${fileName}`,
                                 uploaderId
-                            }
-                            resolve(fileInfo)
+                            };
+                            resolve(fileInfo);
                         }
                     });
                 }
