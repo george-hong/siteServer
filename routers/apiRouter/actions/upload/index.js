@@ -12,7 +12,7 @@ const search = async (request, response, next) => {
     const {[responseContainerField]: responseContainer} = response;
     try {
         const form = new formidable.IncomingForm();
-        const rootFolder = path.join(__dirname, `../../../..${globalConfig.uploadFileRootFolder}`);
+        const rootFolder = path.join(__dirname, `../../../..${globalConfig.localSaveUploadFileRootFolder}`);
         form.keepExtensions = true;
         form.multiples = true;
         form.uploadDir = rootFolder;
@@ -22,19 +22,20 @@ const search = async (request, response, next) => {
                     reject(err);
                 } else {
                     const time = moment().format('YYYYMMDDHHmmss');
-                    const { path: saveFolder, uploaderId } = fields;
+                    let { path: saveFolder, uploaderId } = fields;
+                    saveFolder = saveFolder ? `/${saveFolder}` : '';
                     const randomChart = getRandomCharts(10);
                     const extendName = path.extname(files.file.name);
                     const fileName = `${time}${randomChart}${extendName}`;
                     const oldPath = files.file.path;
-                    const newPath = `${rootFolder}/${saveFolder}/${fileName}`;
+                    const newPath = `${rootFolder}${saveFolder}/${fileName}`;
                     // 重新保存文件
                     fs.rename(oldPath, newPath, function(err){
                         if(err) reject(err);
                         else {
                             const fileInfo = {
                                 fileName,
-                                url: `${request.headers.origin}${globalConfig.uploadFileRootFolder}/${saveFolder}/${fileName}`,
+                                url: `${request.headers.origin}${globalConfig.serverReadUploadFileRootFolder}${saveFolder}/${fileName}`,
                                 uploaderId
                             }
                             resolve(fileInfo)
@@ -50,7 +51,10 @@ const search = async (request, response, next) => {
         };
         const insertResult = await mySQL.insertThenBackId(tableNames.uploadFile, dataToInsert);
         responseContainer.status = 200;
-        responseContainer.data = insertResult;
+        responseContainer.data = {
+            ...insertResult,
+            ...dataToInsert
+        };
     } catch (err) {
         responseContainer.data = err;
     }
