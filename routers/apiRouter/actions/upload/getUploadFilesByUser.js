@@ -10,7 +10,9 @@ const queryArticle = async(request, response, next) => {
     try {
         const { uploaderId } = queryObject;
         const queryResult = await mySQL.queryList(tableNames.uploadFile, {
-            uploaderId,
+            fields: {
+                uploaderId
+            },
             pageSize: 999
         }, '*');
         responseContainer.status = 200;
