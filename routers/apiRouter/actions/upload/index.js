@@ -16,11 +16,12 @@ const search = async (request, response, next) => {
         form.multiples = true;
         form.uploadDir = rootFolder;
         const fileInfo = await new Promise((resolve, reject) => {
-            form.parse(request, function(err,fields,files){
+            form.parse(request, function(err, fields, files){
                 if (err) {
                     reject(err);
                 } else {
                     // 生成文件名、保存路径等信息
+                    console.log('files----', files)
                     const time = moment().format('YYYYMMDDHHmmss');
                     let { path: saveFolder, uploaderId, type } = fields;
                     request[requestParamsField] = fields;

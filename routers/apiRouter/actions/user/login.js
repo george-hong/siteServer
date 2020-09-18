@@ -11,7 +11,7 @@ const checkAccountIsRepeat = async(request, response, next) => {
     const [queryResult] = await mySQL.queryItem(tableNames.user, {
       fields: { [accountField]: requestParams[accountField] },
       limit: 1,
-    }, 'id,account,userName,headerImage');
+    }, 'id,account,userName,avatar');
     // 登录成功后生成jwt
     let token = null;
     if (queryResult) {

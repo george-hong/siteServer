@@ -15,7 +15,7 @@ const updateAvatar = async(request, response, next) => {
                 id: uploaderId
             },
         }, {
-            headerImage: url
+            avatar: url
         });
         responseContainer.status = 200;
     } catch (err) {
