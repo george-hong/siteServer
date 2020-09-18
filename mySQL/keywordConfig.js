@@ -12,7 +12,7 @@ const keywordConfig = {
     orderByKeyword: 'ORDER BY',
     countKeyword: 'COUNT',
     asKeyword: 'AS',
-    likeKeyword: 'LIKE'
+    likeKeyword: 'LIKE',
 };
 
 export default keywordConfig;

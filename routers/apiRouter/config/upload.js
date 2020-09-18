@@ -8,6 +8,11 @@ const routerConfig = {
     '/getUploadFilesByUser': {
         method: 'get',
         actions: ['upload/getUploadFilesByUser']
+    },
+    // 更新头像信息
+    '/updateAvatar': {
+        method: 'post',
+        actions: ['upload/index', 'upload/updateAvatar']
     }
 };
 

@@ -2,26 +2,26 @@ import mySQL from '../../../../mySQL/index';
 import { tableNames, requestParamsField, responseContainerField } from '../../../../mySQL/config';
 import { extractFieldsAsAObject } from '../../../utilities/serverUtilities';
 
-const getUploadFilesByUser = async(request, response, next) => {
+const updateAvatar = async(request, response, next) => {
     const { [requestParamsField]: requestParams } = request;
     const { [responseContainerField]: responseContainer } = response;
-    const fields = ['uploaderId', 'type'];
+    const fields = ['uploaderId'];
     const queryObject = extractFieldsAsAObject(requestParams, fields);
     try {
-        const { uploaderId, type } = queryObject;
-        const queryResult = await mySQL.queryList(tableNames.uploadFile, {
+        const { url } = responseContainer.data;
+        const { uploaderId } = queryObject;
+        const updateResult = await mySQL.updateItem(tableNames.user, {
             fields: {
-                uploaderId,
-                type
+                id: uploaderId
             },
-            pageSize: 999
-        }, '*');
+        }, {
+            headerImage: url
+        });
         responseContainer.status = 200;
-        responseContainer.data = queryResult;
     } catch (err) {
         responseContainer.data = err;
     }
     next();
 };
 
-export default getUploadFilesByUser;
+export default updateAvatar;
