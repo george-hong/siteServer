@@ -3,7 +3,7 @@ import fs from 'fs';
 import mySQL from '../../../../mySQL/index';
 import formidable from 'formidable';
 import moment from 'moment';
-import { responseContainerField, tableNames } from '../../../../mySQL/config';
+import { requestParamsField, responseContainerField, tableNames } from '../../../../mySQL/config';
 import { getRandomCharts } from '../../../utilities/methods';
 import globalConfig from '../../../../config/config';
 
@@ -22,7 +22,8 @@ const search = async (request, response, next) => {
                 } else {
                     // 生成文件名、保存路径等信息
                     const time = moment().format('YYYYMMDDHHmmss');
-                    let { path: saveFolder, uploaderId } = fields;
+                    let { path: saveFolder, uploaderId, type } = fields;
+                    request[requestParamsField] = fields;
                     saveFolder = saveFolder ? `/${saveFolder}` : '';
                     const randomChart = getRandomCharts(10);
                     const extendName = path.extname(files.file.name);
@@ -36,7 +37,8 @@ const search = async (request, response, next) => {
                             const fileInfo = {
                                 fileName,
                                 url: `${request.headers.origin}${globalConfig.serverReadUploadFileRootFolder}${saveFolder}/${fileName}`,
-                                uploaderId
+                                uploaderId,
+                                type
                             };
                             resolve(fileInfo);
                         }
@@ -47,7 +49,8 @@ const search = async (request, response, next) => {
         const dataToInsert = {
             fileName: fileInfo.fileName,
             url: fileInfo.url,
-            uploaderId: fileInfo.uploaderId
+            uploaderId: fileInfo.uploaderId,
+            type: fileInfo.type
         };
         const insertResult = await mySQL.insertThenBackId(tableNames.uploadFile, dataToInsert);
         responseContainer.status = 200;

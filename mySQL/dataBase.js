@@ -118,6 +118,46 @@ const baseMethods = {
             });
         });
     },
+    // 更新项目
+    updateItem(tableName, searchCondition, dataToUpdate) {
+        return new Promise((resolve, reject) => {
+            if (!this.pool) {
+                this.createPool();
+            }
+            //    查询字段
+            const { fields } = searchCondition;
+
+            let searchSentence = '';
+            if (fields) {
+                const conditions = Object.entries(fields).map(group => {
+                    const [key, value] = group;
+                    return `${key} = '${value}'`;
+                }).join(` ${this.andKeyword} `);
+                searchSentence = ` ${this.whereKeyword} ${conditions}`
+            }
+            let updateSentence = '';
+            if (dataToUpdate) {
+                const conditions = Object.entries(dataToUpdate).map(group => {
+                    const [key, value] = group;
+                    return `${key} = '${value}'`;
+                }).join(` ${this.andKeyword} `);
+                updateSentence = ` ${this.setKeyword} ${conditions}`
+            }
+
+
+            const queryConfig = {
+                // TODO 这里应给查询条件提供一个配置项
+                sql: `${this.updateKeyword} ${tableName}${updateSentence}${searchSentence}`,
+            };
+            console.log('------------------ SQL更新语句 ------------------')
+            console.log(queryConfig.sql);
+
+            this.pool.query(queryConfig.sql, (err, results, fields) => {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+    },
     destroyPool() {
         if (this.pool) this.pool.end();
     }

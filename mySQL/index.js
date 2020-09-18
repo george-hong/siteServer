@@ -79,8 +79,20 @@ const dbMethods = {
                 reject(err);
             }
         });
+    },
+    updateItem(tableName, searchCondition, dataToUpdate) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const dataBase = new DataBase();
+                dataBase.createPool();
+                const insertResult = await dataBase.updateItem(tableName, searchCondition, dataToUpdate);
+                dataBase.destroyPool();
+                resolve(insertResult);
+            } catch (err) {
+                reject(err);
+            }
+        });
     }
-
 }
 
 module.exports = dbMethods;
