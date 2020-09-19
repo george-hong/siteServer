@@ -9,6 +9,7 @@ import globalConfig from '../../../../config/config';
 
 const search = async (request, response, next) => {
     const {[responseContainerField]: responseContainer} = response;
+    let isNeedSaveToDatabase = false;
     try {
         const form = new formidable.IncomingForm();
         const rootFolder = path.join(__dirname, `../../../..${globalConfig.localSaveUploadFileRootFolder}`);
@@ -23,7 +24,8 @@ const search = async (request, response, next) => {
                     // 生成文件名、保存路径等信息
                     console.log('files----', files)
                     const time = moment().format('YYYYMMDDHHmmss');
-                    let { path: saveFolder, uploaderId, type } = fields;
+                    let { path: saveFolder, uploaderId, type, save } = fields;
+                    isNeedSaveToDatabase = !!save;
                     request[requestParamsField] = fields;
                     saveFolder = saveFolder ? `/${saveFolder}` : '';
                     const randomChart = getRandomCharts(10);
@@ -53,12 +55,18 @@ const search = async (request, response, next) => {
             uploaderId: fileInfo.uploaderId,
             type: fileInfo.type
         };
-        const insertResult = await mySQL.insertThenBackId(tableNames.uploadFile, dataToInsert);
+        let insertResult;
+        if (isNeedSaveToDatabase) insertResult = await mySQL.insertThenBackId(tableNames.uploadFile, dataToInsert);
         responseContainer.status = 200;
-        responseContainer.data = {
-            ...insertResult,
-            ...dataToInsert
-        };
+        responseContainer.data = dataToInsert;
+        // 如果需要保存图片信息到数据库，响应值添加插入信息
+        if (isNeedSaveToDatabase) {
+            const { data } = responseContainer;
+            responseContainer.data = {
+                ...data,
+                ...insertResult
+            }
+        }
     } catch (err) {
         responseContainer.data = err;
     }
