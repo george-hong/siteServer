@@ -2,20 +2,20 @@ import mySQL from '../../../../mySQL/index';
 import { tableNames, requestParamsField, responseContainerField } from '../../../../mySQL/config';
 import { extractFieldsAsAObject } from '../../../utilities/serverUtilities';
 
-const updateAvatar = async(request, response, next) => {
+const updateUserImage = async(request, response, next) => {
     const { [requestParamsField]: requestParams } = request;
     const { [responseContainerField]: responseContainer } = response;
-    const fields = ['uploaderId'];
+    const fields = ['uploaderId', 'type'];
     const queryObject = extractFieldsAsAObject(requestParams, fields);
     try {
-        const { url } = responseContainer.data;
+        const { url, type: saveField } = responseContainer.data;
         const { uploaderId } = queryObject;
         const updateResult = await mySQL.updateItem(tableNames.user, {
             fields: {
                 id: uploaderId
             },
         }, {
-            avatar: url
+            [saveField]: url
         });
         responseContainer.status = 200;
     } catch (err) {
@@ -24,4 +24,4 @@ const updateAvatar = async(request, response, next) => {
     next();
 };
 
-export default updateAvatar;
+export default updateUserImage;
