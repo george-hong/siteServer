@@ -10,9 +10,9 @@ const routerConfig = {
         actions: ['upload/getUploadFilesByUser']
     },
     // 更新头像信息
-    '/updateAvatar': {
+    '/updateUserImage': {
         method: 'post',
-        actions: ['upload/index', 'upload/updateAvatar']
+        actions: ['upload/index', 'upload/updateUserImage']
     }
 };
 
