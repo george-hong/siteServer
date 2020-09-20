@@ -140,7 +140,7 @@ const baseMethods = {
                 const conditions = Object.entries(dataToUpdate).map(group => {
                     const [key, value] = group;
                     return `${key} = '${value}'`;
-                }).join(` ${this.andKeyword} `);
+                }).join(`,`);
                 updateSentence = ` ${this.setKeyword} ${conditions}`
             }
 
