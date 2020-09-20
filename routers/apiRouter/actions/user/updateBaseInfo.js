@@ -5,20 +5,22 @@ import { extractFieldsAsAObject } from '../../../utilities/serverUtilities';
 const updateBaseInfo = async(request, response, next) => {
     const { [requestParamsField]: requestParams } = request;
     const { [responseContainerField]: responseContainer } = response;
-    const fields = ['userId', 'userName'];
+    const fields = ['userId', 'userName', 'introduction'];
     const queryObject = extractFieldsAsAObject(requestParams, fields);
     try {
-        const { userId, userName } = queryObject;
+        const { userId, userName, introduction } = queryObject;
         const updateResult = await mySQL.updateItem(tableNames.user, {
             fields: {
                 id: userId
             },
         }, {
-            userName
+            userName,
+            introduction
         });
         responseContainer.status = 200;
         responseContainer.data = {
-            userName
+            userName,
+            introduction
         };
     } catch (err) {
         responseContainer.data = err;
