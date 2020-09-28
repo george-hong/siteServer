@@ -1,14 +1,22 @@
 import mysql from 'mysql';
-import {sqlLoginInfo} from './config';
+import { sqlLoginInfo } from './config';
 import keywordConfig from './keywordConfig';
+import { isArray, isObject } from '../libs/utilMethods';
+
+// 判断是否需要添加空格
+const cs = string => string ? ` ${string}` : '';
 // 创建空原型
 const dataBasePrototype = Object.create({});
 // 原型方法
 const baseMethods = {
-    // 创建一个连接池
+    // 创建连接池
     createPool() {
         this.pool = mysql.createPool(sqlLoginInfo);
         return this;
+    },
+    // 销毁连接池
+    destroyPool() {
+        if (this.pool) this.pool.end();
     },
     insert(tableName, dataToInsert = {}) {
         return new Promise((resolve, reject) => {
@@ -30,7 +38,7 @@ const baseMethods = {
             });
         });
     },
-
+    // 查询
     query(tableName, searchCondition, showCondition = 'id') {
         // tableName 查询的表名称
         // searchCondition = { fields: { key, value }, orderBy} 需要查询的条件
@@ -125,29 +133,13 @@ const baseMethods = {
                 this.createPool();
             }
             //    查询字段
-            const { fields } = searchCondition;
-
             let searchSentence = '';
-            if (fields) {
-                const conditions = Object.entries(fields).map(group => {
-                    const [key, value] = group;
-                    return `${key} = '${value}'`;
-                }).join(` ${this.andKeyword} `);
-                searchSentence = ` ${this.whereKeyword} ${conditions}`
-            }
-            let updateSentence = '';
-            if (dataToUpdate) {
-                const conditions = Object.entries(dataToUpdate).map(group => {
-                    const [key, value] = group;
-                    return `${key} = '${value}'`;
-                }).join(`,`);
-                updateSentence = ` ${this.setKeyword} ${conditions}`
-            }
-
-
+            if (searchCondition) searchSentence = this.getWhereSentence(searchCondition);
+            let setSentence = '';
+            if (dataToUpdate) setSentence = this.getSetSentence(dataToUpdate);
             const queryConfig = {
                 // TODO 这里应给查询条件提供一个配置项
-                sql: `${this.updateKeyword} ${tableName}${updateSentence}${searchSentence}`,
+                sql: `${this.updateKeyword} ${tableName}${cs(setSentence)}${cs(searchSentence)}`,
             };
             console.log('------------------ SQL更新语句 ------------------')
             console.log(queryConfig.sql);
@@ -158,8 +150,91 @@ const baseMethods = {
             });
         });
     },
-    destroyPool() {
-        if (this.pool) this.pool.end();
+    // 更新项目组
+    updateGroup(tableName, searchCondition, dataToUpdate) {
+        return new Promise((resolve, reject) => {
+            if (!this.pool) {
+                this.createPool();
+            }
+            let searchSentence = '';
+            if (searchCondition) searchSentence = this.getWhereSentence(searchCondition);
+            let setSentence = '';
+            if (dataToUpdate) setSentence = this.getSetSentence(dataToUpdate);
+
+
+            const queryConfig = {
+                // TODO 这里应给查询条件提供一个配置项
+                sql: `${this.updateKeyword} ${tableName}${cs(setSentence)}${cs(searchSentence)}`,
+            };
+            console.log('------------------ SQL更新组语句 ------------------')
+            console.log(queryConfig.sql);
+
+            this.pool.query(queryConfig.sql, (err, results, fields) => {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+    },
+    // 删除项目组
+    removeGroup (tableName, searchCondition) {
+        return new Promise((resolve, reject) => {
+            if (!this.pool) {
+                this.createPool();
+            }
+            let searchSentence = '';
+            if (searchCondition) searchSentence = this.getWhereSentence(searchCondition);
+
+
+            const queryConfig = {
+                // TODO 这里应给查询条件提供一个配置项
+                sql: `${this.deleteKeyword} ${this.fromKeyword} ${tableName}${cs(searchSentence)}`,
+            };
+            console.log('------------------ SQL删除组语句 ------------------')
+            console.log(queryConfig.sql);
+
+            this.pool.query(queryConfig.sql, (err, results, fields) => {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+    },
+
+    /* 以下是sql相关工具方法 */
+
+    // 解析搜索条件
+    getWhereSentence (searchCondition) {
+        const { fields } = searchCondition;
+        let matchCondition = '';
+        // 以数组格式解析field
+        if (fields && isArray(fields)) {
+            matchCondition = fields.map(group => {
+                const { key, value, condition = '=' } = group;
+                return `${key} ${condition} ${value}`;
+            }).join(', ');
+        }
+        if (fields && isObject(fields)) {
+            matchCondition = Object.entries(fields).map(group => {
+                const [key, value] = group;
+                return `${key} = '${value}'`;
+            }).join(` ${this.andKeyword} `);
+        }
+        // 返回解析结果
+        if (matchCondition) {
+            return `${this.whereKeyword}${matchCondition ? ` ${matchCondition}` : ''}`;
+        }
+        return '';
+    },
+    // 解析设置数据语句
+    getSetSentence (dataToUpdate) {
+        let updateSentence = '';
+        if (dataToUpdate && isObject(dataToUpdate)) {
+            const updateCondition = Object.entries(dataToUpdate).map(group => {
+                const [key, value] = group;
+                return `${key} = '${value}'`;
+            }).join(`, `);
+            updateSentence = `${this.setKeyword} ${updateCondition}`;
+        }
+        return updateSentence;
     }
 };
 

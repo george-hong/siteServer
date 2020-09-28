@@ -85,14 +85,40 @@ const dbMethods = {
             try {
                 const dataBase = new DataBase();
                 dataBase.createPool();
-                const insertResult = await dataBase.updateItem(tableName, searchCondition, dataToUpdate);
+                const updateResult = await dataBase.updateItem(tableName, searchCondition, dataToUpdate);
                 dataBase.destroyPool();
-                resolve(insertResult);
+                resolve(updateResult);
             } catch (err) {
                 reject(err);
             }
         });
-    }
+    },
+    updateGroup(tableName, searchCondition, dataToUpdate) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const dataBase = new DataBase();
+                dataBase.createPool();
+                const updateResult = await dataBase.updateGroup(tableName, searchCondition, dataToUpdate);
+                dataBase.destroyPool();
+                resolve(updateResult);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    },
+    removeGroup(tableName, searchCondition) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const dataBase = new DataBase();
+                dataBase.createPool();
+                const updateResult = await dataBase.removeGroup(tableName, searchCondition);
+                dataBase.destroyPool();
+                resolve(updateResult);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    },
 }
 
 module.exports = dbMethods;
