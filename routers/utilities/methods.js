@@ -75,7 +75,7 @@ export const getRandomCharts = length => {
 }
 
 const methods = {
-
+    getRandomCharts
 };
 
 export default methods;

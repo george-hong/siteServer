@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import history from  'connect-history-api-fallback';
 import apiRouter from './routers';
+import intervalTask from './task/intervalTask/intervalTask';
 
 const app = express();
 const port = 3000;
@@ -43,3 +44,6 @@ app.use(express.static(path.join(__dirname, './app')));  // 静态资源
 
 
 app.listen(port, () => console.log(`Application running on port ${port}!`));
+
+// 启动定时任务
+intervalTask.begin();

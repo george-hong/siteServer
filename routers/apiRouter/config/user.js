@@ -11,6 +11,10 @@ const routerConfig = {
         method: 'post',
         actions: ['user/login'],
     },
+    '/getBaseInfo': { // 获取用户基本信息
+        method: 'get',
+        actions: ['user/getBaseInfo'],
+    },
     '/test': { // 测试
         method: 'post',
         actions: ['base/checkAndUpdateToken', 'user/test'],
