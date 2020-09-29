@@ -9,6 +9,11 @@ const apiRouter = express.Router();
 
 apiRouter.use(bodyParser.urlencoded({ extended: false }));
 
-apiRouter.use('/api', parseRequestParams, initApiRouter(apiRouterConfig), sendData);
+apiRouter.use(
+    '/api',
+    parseRequestParams,
+    initApiRouter(apiRouterConfig),
+    sendData
+);
 
 module.exports = apiRouter;

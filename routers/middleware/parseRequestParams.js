@@ -1,4 +1,4 @@
-import { requestParamsField, responseContainerField } from '../../mySQL/config';
+import { requestParamsField, responseContainerField } from '../apiRouter/fieldConfig';
 // 根据不同的请求类型 将请求参数设置到统一的字段,并将响应对象添加初始值
 const parseRequestData = (request, response, next) => {
   const { method, query, body } = request;

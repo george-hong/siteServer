@@ -3,7 +3,8 @@ import fs from 'fs';
 import mySQL from '../../../../mySQL/index';
 import formidable from 'formidable';
 import moment from 'moment';
-import { requestParamsField, responseContainerField, tableNames } from '../../../../mySQL/config';
+import { tableNames } from '../../../../mySQL/config';
+import { requestParamsField, responseContainerField } from '../../fieldConfig';
 import { getRandomCharts } from '../../../utilities/methods';
 import globalConfig from '../../../../config/config';
 
