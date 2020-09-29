@@ -21,7 +21,7 @@ const routerConfig = {
     },
     '/updateBaseInfo': { // 更新用户基础信息
         method: 'post',
-        actions: ['user/updateBaseInfo'],
+        actions: ['base/checkAndUpdateToken', 'user/updateBaseInfo'],
     }
 };
 

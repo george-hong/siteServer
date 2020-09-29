@@ -1,5 +1,6 @@
 import mySQL from '../../../../mySQL/index';
-import { tableNames, requestParamsField, responseContainerField } from '../../../../mySQL/config';
+import { tableNames } from '../../../../mySQL/config';
+import { requestParamsField, responseContainerField } from '../../fieldConfig';
 import { extractFieldsAsAObject } from '../../../utilities/serverUtilities';
 
 const queryArticle = async(request, response, next) => {

@@ -14,12 +14,7 @@ const tableNames = {
     uploadFile: 'uploadFile',       // 上传文件表
 };
 
-const responseContainerField = 'body'; // response上用于暂存响应内容的字段
-const requestParamsField = 'requestParams'; // 请求上用于统一暂存请求参数的字段
-
 module.exports = {
     sqlLoginInfo,
-    tableNames,
-    responseContainerField,
-    requestParamsField,
+    tableNames
 };

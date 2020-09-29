@@ -1,5 +1,6 @@
 import mySQL from '../../../../mySQL/index';
-import { tableNames, requestParamsField, responseContainerField } from '../../../../mySQL/config';
+import { tableNames } from '../../../../mySQL/config';
+import { requestParamsField, responseContainerField } from '../../fieldConfig';
 import { extractFieldsAsAObject } from "../../../utilities/serverUtilities";
 
 // 如果查询到则返回账号信息，否则返回Null
