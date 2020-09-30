@@ -17,11 +17,11 @@ const routerConfig = {
     },
     '/test': { // 测试
         method: 'post',
-        actions: ['base/checkAndUpdateToken', 'user/test'],
+        actions: ['user/test'],
     },
     '/updateBaseInfo': { // 更新用户基础信息
         method: 'post',
-        actions: ['base/checkAndUpdateToken', 'user/updateBaseInfo'],
+        actions: ['base/checkTokenParseInfo', 'user/updateBaseInfo'],
     }
 };
 

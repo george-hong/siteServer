@@ -47,6 +47,7 @@ const parseToken = (token) => {
         };
         mySQL.queryItem(tableNames.token, searchCondition, 'secret,expiresTime')
             .then(result => {
+                if (!result[0]) return reject('token无效,请重新登录');
                 const { secret } = result[0];
                 let errorMessage = null;
                 jwt.verify(realToken, secret, (err, authData) => {
