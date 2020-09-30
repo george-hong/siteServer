@@ -9,7 +9,7 @@ import mySQL from '../../../../mySQL';
 import { tableNames } from '../../../../mySQL/config';
 // TODO 在校验token时，当临近过期时，应跟新token
 // 如果token可用执行next,否则返回错误码及信息
-const checkAndUpdateToken = async (request, response, next) => {
+const checkTokenParseInfo = async (request, response, next) => {
     const { token } = request.headers;
     try {
         const tokenInfo = await parseToken(token);
@@ -43,4 +43,4 @@ const checkAndUpdateToken = async (request, response, next) => {
     }
 };
 
-export default checkAndUpdateToken;
+export default checkTokenParseInfo;

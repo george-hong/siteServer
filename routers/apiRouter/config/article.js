@@ -1,7 +1,7 @@
 const routerConfig = {
   '/edit': { // 编辑文章
     method: 'post',
-    actions: ['base/checkAndUpdateToken', 'article/edit'],
+    actions: ['base/checkTokenParseInfo', 'article/edit'],
   },
   '/detail': { // 编辑详情
     method: 'get',

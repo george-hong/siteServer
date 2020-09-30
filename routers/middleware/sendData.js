@@ -5,17 +5,14 @@ import { createResponseData } from '../utilities/serverUtilities';
 const sendData = (request, response, next) => {
   const {
       [responseContainerField]: responseData,
-      [responseNewTokenContainerField]: newToken
+      [responseNewTokenContainerField]: token
   } = response;
   const result = { status: 500, result: null };
   if (responseData) {
     result.status = responseData.status;
-    result.dataContainer = {
-        responseData: responseData.data
-    };
-    if (newToken) result.dataContainer.token = newToken;
+    result.data = responseData.data;
   }
-  const sendContent = createResponseData(result.status, result.dataContainer);
+  const sendContent = createResponseData(result.status, result.data, token);
   response.status(sendContent.status).send(sendContent.body);
 };
 

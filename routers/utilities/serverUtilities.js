@@ -1,5 +1,5 @@
 //返回各种状态字符串
-export const createResponseData = (status, data = null) => {
+export const createResponseData = (status, data = null, token) => {
     const dealResult = {
         status: 200,
         body: {
@@ -35,11 +35,12 @@ export const createResponseData = (status, data = null) => {
             dealResult.message = '';
     }
     if (status !== 200) {
-        dealResult.body.data.responseData = null;
+        dealResult.body.data = null;
         dealResult.body.errDetail = String(data);
         console.log('--------------------- err info ---------------------');
         console.log(data);
     }
+    if (token) dealResult.body.token = token;
     return dealResult;
 };
 
