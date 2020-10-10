@@ -11,7 +11,7 @@ const updateUserImage = async(request, response, next) => {
     try {
         const { url, type: saveField } = responseContainer.data;
         const { uploaderId } = queryObject;
-        const updateResult = await mySQL.updateItem(tableNames.user, {
+        await mySQL.updateItem(tableNames.user, {
             fields: {
                 id: uploaderId
             },

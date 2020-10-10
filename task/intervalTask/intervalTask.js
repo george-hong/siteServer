@@ -3,14 +3,18 @@ import { tableNames } from '../../mySQL/config';
 
 const intervalTask = {
     // 清除token表中失效的token
-    clearTokenTable () {
-        mySQL.removeGroup(tableNames.token, {
-            fields: [{
-                key: 'expiresTime',
-                value: Date.now(),
-                condition: '<'
-            }]
-        })
+    async clearTokenTable () {
+        try {
+            await mySQL.removeGroup(tableNames.token, {
+                fields: [{
+                    key: 'expiresTime',
+                    value: Date.now(),
+                    condition: '<'
+                }]
+            });
+        } catch (error) {
+            console.log('token清除失败')
+        }
     },
     runAndSetInterval (progress, minutes) {
         progress();
