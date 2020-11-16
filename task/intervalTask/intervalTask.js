@@ -13,7 +13,7 @@ const intervalTask = {
                 }]
             });
         } catch (error) {
-            console.log('token清除失败')
+            console.log('token清除失败', error)
         }
     },
     runAndSetInterval (progress, minutes) {
