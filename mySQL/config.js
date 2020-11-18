@@ -1,6 +1,6 @@
 // 数据库配置
 const sqlLoginInfo = {
-    host: 'hongchangjun.top',
+    host: 'localhost',
     port: 3306,
     user: 'root',
     password: 'zxc916856595',
