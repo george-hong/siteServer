@@ -52,7 +52,6 @@ const dbMethods = {
                 const totalField = 'total';
                 const total = await dataBase.query(tableName, searchCondition, `${keywordConfig.countKeyword}(*) ${keywordConfig.asKeyword} ${totalField}`);
                 dataBase.destroyPool();
-                console.log('查询结果---', queryResult)
                 resolve({
                     content: queryResult,
                     total: total[0][totalField],
