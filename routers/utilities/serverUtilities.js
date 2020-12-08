@@ -1,3 +1,4 @@
+import { responseContainerField } from '../apiRouter/fieldConfig';
 //返回各种状态字符串
 export const createResponseData = (status, data = null, token) => {
     const dealResult = {
@@ -48,7 +49,7 @@ export const createResponseData = (status, data = null, token) => {
 // object 需要抽取字段的对象
 // fields {Array, String} 需要抽取的字段，如果是String则以逗号分隔
 export const extractFieldsAsAObject = (object, fields) => {
-    const result = [];
+    const result = {};
     let fieldsArr = fields;
     if (typeof fields === 'string') {
         fieldsArr = fields.split(',');
@@ -59,13 +60,25 @@ export const extractFieldsAsAObject = (object, fields) => {
     });
     return result;
 };
+/**
+ * 在响应体上生成错误信息及错误编码
+ * @param response {Object} 响应载体
+ * @param errorMessage {String} 错误信息 默认'信息异常‘
+ * @param errorCode {Number} 错误编码 默认500
+ */
+export const createErrorMessageOnResponse = (response, errorMessage = '信息异常', errorCode = 500) => {
+    const { [responseContainerField]: responseContainer } = response;
+    responseContainer.status = errorCode;
+    throw(errorMessage);
+};
 
 export const dealCatchError = error => {
     console.log('捕获异常:', error);
-}
+};
 
 module.exports = {
     createResponseData,
     extractFieldsAsAObject,
-    dealCatchError
+    dealCatchError,
+    createErrorMessageOnResponse
 };

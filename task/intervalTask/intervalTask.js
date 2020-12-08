@@ -17,7 +17,7 @@ const intervalTask = {
         }
     },
     runAndSetInterval (progress, minutes) {
-        progress();
+        // progress();
         setInterval(progress, 1000 * 60 * minutes);
     },
     begin () {
