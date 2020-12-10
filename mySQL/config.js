@@ -12,6 +12,7 @@ const tableNames = {
     token: 'token',                 // token表名称
     article: 'article',             // 文章表名称
     uploadFile: 'uploadFile',       // 上传文件表
+    dictionary: 'dictionary',       // 字典表
 };
 
 module.exports = {

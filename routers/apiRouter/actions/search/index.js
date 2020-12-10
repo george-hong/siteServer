@@ -11,6 +11,7 @@ const search = async (request, response, next) => {
     try {
         const { keyword } = queryObject;
         const queryResult = await mySQL.querySearch(tableNames.article, {
+            fields: { status: 'on' },
             search: `title LIKE '%${ keyword }%'`
         }, '*');
         responseContainer.status = 200;
