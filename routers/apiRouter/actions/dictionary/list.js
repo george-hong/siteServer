@@ -11,16 +11,22 @@ const queryDictionaryList = async (request, response, next) => {
     try {
         const { page, pageSize, keyword, status } = queryObject;
         const searchCondition = { page, pageSize };
-        const fields = {};
+        const fields = [];
         // 如果有搜索关键字
         if (keyword) {
-            searchCondition.search = `name LIKE '%${ keyword }%'`;
+            fields.push({
+                key: 'name',
+                value: `%${ keyword }%`,
+                condition: 'LIKE'
+            });
         }
-        // 如果需要过滤文章状态
-        if (status) {
-            fields.status = status;
-        }
-        if (JSON.stringify(fields) !== '{}') searchCondition.fields = fields;
+        // 过滤字典状态、默认取未删除的字典
+        fields.push({
+            key: 'status',
+            value: 'on'
+        })
+        if (fields.length) searchCondition.fields = fields;
+
         const queryResult = await mySQL.queryList(tableNames.dictionary, searchCondition, '*');
         responseContainer.status = 200;
         responseContainer.data = queryResult;

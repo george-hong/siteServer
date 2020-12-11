@@ -11,7 +11,7 @@ const create = async (request, response, next) => {
     try {
         const dataToInsert = extractFieldsAsAObject(requestParams, fields);
         dataToInsert.userId = userIdFromToken;
-        const repeatDictionary = await mySQL.queryItem(tableNames.dictionary, { fields: { name: dataToInsert.name } }, 'id');
+        const repeatDictionary = await mySQL.queryItem(tableNames.dictionary, { fields: { name: dataToInsert.name, status: 'on' } }, 'id');
         if (repeatDictionary && repeatDictionary.length) createErrorMessageOnResponse(response, '字典名称重复');
         const insertResult = await mySQL.insertThenBackId(tableNames.dictionary, dataToInsert);
         responseContainer.status = 200;

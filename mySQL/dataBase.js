@@ -50,22 +50,23 @@ const baseMethods = {
             //    查询字段 排序字段 限制数量 排序顺序asc/desc
             const { fields, order, limit, orderDirection } = searchCondition;
             let searchSentence = '';
-            if (fields) {
-                const conditions = Object.entries(fields).map(group => {
-                    const [key, value] = group;
-                    return `${ key } = '${ value }'`;
-                }).join(` ${ this.andKeyword } `);
-                searchSentence = ` ${ this.whereKeyword } ${ conditions }`
-            }
+            // if (fields) {
+            //     const conditions = Object.entries(fields).map(group => {
+            //         const [key, value] = group;
+            //         return `${ key } = '${ value }'`;
+            //     }).join(` ${ this.andKeyword } `);
+            //     searchSentence = ` ${ this.whereKeyword } ${ conditions }`
+            // }
+            if (searchCondition) searchSentence = this.getWhereSentence(searchCondition);
             let orderSentence = '';
             if (order) orderSentence = ` ${ this.orderByKeyword } ${ order }${ orderDirection ? ` ${ orderDirection }` : '' }`;
             let limitSentence = '';
             if (limit) limitSentence = ` ${ this.limitKeyword } ${ limit }`;
 
-
+            console.log('searchSentence------',searchSentence)
             const queryConfig = {
                 // TODO 这里应给查询条件提供一个配置项
-                sql: `${ this.selectKeyword } ${ showCondition } ${ this.fromKeyword } ${ tableName }${ searchSentence }${ orderSentence }${ limitSentence }`,
+                sql: `${ this.selectKeyword } ${ showCondition } ${ this.fromKeyword } ${ tableName }${ cs(searchSentence) }${ orderSentence }${ limitSentence }`,
             };
             console.log('------------------ SQL语句 ------------------')
             console.log(queryConfig.sql);
@@ -206,8 +207,8 @@ const baseMethods = {
         if (fields && isArray(fields)) {
             matchCondition = fields.map(group => {
                 const { key, value, condition = '=' } = group;
-                return `${ key } ${ condition } ${ value }`;
-            }).join(', ');
+                return `${ key } ${ condition } '${ value }'`;
+            }).join(` ${ this.andKeyword } `);
         }
         if (fields && isObject(fields)) {
             matchCondition = Object.entries(fields).map(group => {
