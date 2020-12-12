@@ -1,7 +1,7 @@
 import mySQL from '../../../../mySQL/index';
 import { tableNames } from '../../../../mySQL/config';
 import { requestParamsField, requestTokenInfoContainerField, responseContainerField } from '../../fieldConfig';
-import { extractFieldsAsAObject, createErrorMessageOnResponse } from '../../../utilities/serverUtilities';
+import { extractFieldsAsAObject, throwErrorMessageOnResponse } from '../../../utilities/serverUtilities';
 
 const deleteDictionary = async (request, response, next) => {
     const { [requestParamsField]: requestParams, [requestTokenInfoContainerField]: tokenExtraInfo } = request;
@@ -12,8 +12,8 @@ const deleteDictionary = async (request, response, next) => {
     try {
         const dataToUpdate = { ...fullParams, status: 'off'};
         const oldDictionaryItem = await mySQL.queryItem(tableNames.dictionary, { fields: { id: fullParams.id } }, 'userId');
-        if (!oldDictionaryItem || !oldDictionaryItem.length) createErrorMessageOnResponse(response, '需要删除的字典不存在');
-        if (oldDictionaryItem[0].userId !== userIdFromToken) createErrorMessageOnResponse(403);
+        if (!oldDictionaryItem || !oldDictionaryItem.length) throwErrorMessageOnResponse(response, '需要删除的字典不存在');
+        if (oldDictionaryItem[0].userId !== userIdFromToken) throwErrorMessageOnResponse(response, '您没有权限');
         const updateResult = await mySQL.updateItem(tableNames.dictionary, { fields: { id: fullParams.id } }, dataToUpdate);
         responseContainer.status = 200;
         responseContainer.data = updateResult;

@@ -74,8 +74,13 @@ export const getRandomCharts = length => {
     return resultList.join('');
 }
 
+const isEmptyField = value => {
+    return (value === '') || (value === undefined);
+}
+
 const methods = {
-    getRandomCharts
+    getRandomCharts,
+    isEmptyField
 };
 
 export default methods;

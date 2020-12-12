@@ -3,18 +3,18 @@ import { tableNames } from '../../../../mySQL/config';
 import { requestParamsField, requestTokenInfoContainerField, responseContainerField } from '../../fieldConfig';
 import { extractFieldsAsAObject, throwErrorMessageOnResponse } from '../../../utilities/serverUtilities';
 
-const changeStatus = async (request, response, next) => {
+const deleteDictionaryField = async (request, response, next) => {
     const { [requestParamsField]: requestParams, [requestTokenInfoContainerField]: tokenExtraInfo } = request;
     const { [responseContainerField]: responseContainer } = response;
     const { id: userIdFromToken } = tokenExtraInfo;
-    const fields = ['status', 'id'];
+    const fields = ['id'];
     const fullParams = extractFieldsAsAObject(requestParams, fields);
     try {
-        const dataToUpdate = { status: fullParams.status };
-        const oldArticleItem = await mySQL.queryItem(tableNames.article, { fields: { id: fullParams.id } }, 'authorId');
-        if (!oldArticleItem || !oldArticleItem.length) throwErrorMessageOnResponse(response, '文章不存在');
-        if (oldArticleItem[0].authorId !== userIdFromToken) throwErrorMessageOnResponse(response, '您不是文章作者，无法变更状态');
-        const updateResult = await mySQL.updateItem(tableNames.article, { fields: { id: fullParams.id } }, dataToUpdate);
+        const dataToUpdate = { ...fullParams, status: 'off'};
+        const oldFieldItem = await mySQL.queryItem(tableNames.dictionaryField, { fields: { id: fullParams.id } }, 'userId');
+        if (!oldFieldItem || !oldFieldItem.length) throwErrorMessageOnResponse(response, '需要删除的字段不存在');
+        if (oldFieldItem[0].userId !== userIdFromToken) throwErrorMessageOnResponse(response, '您没有权限');
+        const updateResult = await mySQL.updateItem(tableNames.dictionaryField, { fields: { id: fullParams.id } }, dataToUpdate);
         responseContainer.status = 200;
         responseContainer.data = updateResult;
     } catch (err) {
@@ -23,4 +23,4 @@ const changeStatus = async (request, response, next) => {
     next();
 };
 
-export default changeStatus;
+export default deleteDictionaryField;

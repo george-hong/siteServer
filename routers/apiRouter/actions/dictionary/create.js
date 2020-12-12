@@ -1,7 +1,8 @@
 import mySQL from '../../../../mySQL/index';
 import { tableNames } from '../../../../mySQL/config';
 import { requestParamsField, requestTokenInfoContainerField, responseContainerField } from '../../fieldConfig';
-import { extractFieldsAsAObject, createErrorMessageOnResponse } from '../../../utilities/serverUtilities';
+import { extractFieldsAsAObject, throwErrorMessageOnResponse } from '../../../utilities/serverUtilities';
+import { getCurrentTime } from '../../../utilities/time';
 
 const create = async (request, response, next) => {
     const { [requestParamsField]: requestParams, [requestTokenInfoContainerField]: tokenExtraInfo } = request;
@@ -11,8 +12,9 @@ const create = async (request, response, next) => {
     try {
         const dataToInsert = extractFieldsAsAObject(requestParams, fields);
         dataToInsert.userId = userIdFromToken;
+        dataToInsert.createTime = dataToInsert.updateTime = getCurrentTime();
         const repeatDictionary = await mySQL.queryItem(tableNames.dictionary, { fields: { name: dataToInsert.name, status: 'on' } }, 'id');
-        if (repeatDictionary && repeatDictionary.length) createErrorMessageOnResponse(response, '字典名称重复');
+        if (repeatDictionary && repeatDictionary.length) throwErrorMessageOnResponse(response, '字典名称重复');
         const insertResult = await mySQL.insertThenBackId(tableNames.dictionary, dataToInsert);
         responseContainer.status = 200;
         responseContainer.data = insertResult;

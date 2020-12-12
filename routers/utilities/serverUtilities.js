@@ -66,7 +66,7 @@ export const extractFieldsAsAObject = (object, fields) => {
  * @param errorMessage {String} 错误信息 默认'信息异常‘
  * @param errorCode {Number} 错误编码 默认500
  */
-export const createErrorMessageOnResponse = (response, errorMessage = '信息异常', errorCode = 500) => {
+export const throwErrorMessageOnResponse = (response, errorMessage = '信息异常', errorCode = 500) => {
     const { [responseContainerField]: responseContainer } = response;
     responseContainer.status = errorCode;
     throw(errorMessage);
@@ -80,5 +80,5 @@ module.exports = {
     createResponseData,
     extractFieldsAsAObject,
     dealCatchError,
-    createErrorMessageOnResponse
+    throwErrorMessageOnResponse
 };

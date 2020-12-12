@@ -207,13 +207,15 @@ const baseMethods = {
         if (fields && isArray(fields)) {
             matchCondition = fields.map(group => {
                 const { key, value, condition = '=' } = group;
-                return `${ key } ${ condition } '${ value }'`;
+                const realValue = typeof value === 'string' ? `'${value}'` : value;
+                return `${ key } ${ condition } ${ realValue }`;
             }).join(` ${ this.andKeyword } `);
         }
         if (fields && isObject(fields)) {
             matchCondition = Object.entries(fields).map(group => {
                 const [key, value] = group;
-                return `${ key } = '${ value }'`;
+                const realValue = typeof value === 'string' ? `'${value}'` : value;
+                return `${ key } = ${ realValue }`;
             }).join(` ${ this.andKeyword } `);
         }
         // 返回解析结果
