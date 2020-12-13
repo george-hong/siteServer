@@ -15,7 +15,11 @@ const getBaseInfo = async (request, response, next) => {
             fields: { account },
             limit: 1,
         }, '*');
-        if (queryResult) delete queryResult.password;
+        if (queryResult) {
+            delete queryResult.password;
+            queryResult.userId = queryResult.id;
+            delete queryResult.id;
+        }
         responseContainer.status = 200;
         responseContainer.data = {
             accountInfo: queryResult || null,
