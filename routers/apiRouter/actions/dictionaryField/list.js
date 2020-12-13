@@ -15,7 +15,7 @@ const queryDictionaryFieldList = async (request, response, next) => {
         // 过滤字段状态
         fields.push({
             key: 'dicId',
-            value: dicId
+            value: dicId - 0
         });
         // 过滤字段状态
         if (status) {

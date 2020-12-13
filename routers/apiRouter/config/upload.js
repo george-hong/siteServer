@@ -4,6 +4,11 @@ const routerConfig = {
         method: 'post',
         actions: ['base/checkTokenParseInfo', 'upload/index'],
     },
+    // 更新图片信息
+    '/update': {
+        method: 'post',
+        actions: ['base/checkTokenParseInfo', 'upload/update'],
+    },
     // 根据用户id获取上传的文件信息
     '/getUploadFilesByUser': {
         method: 'get',

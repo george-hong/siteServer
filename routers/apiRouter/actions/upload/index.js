@@ -2,14 +2,16 @@ import path from 'path';
 import fs from 'fs';
 import mySQL from '../../../../mySQL/index';
 import formidable from 'formidable';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { tableNames } from '../../../../mySQL/config';
-import { requestParamsField, responseContainerField } from '../../fieldConfig';
+import { requestParamsField, requestTokenInfoContainerField, responseContainerField } from '../../fieldConfig';
 import { getRandomCharts } from '../../../utilities/methods';
 import globalConfig from '../../../../config/config';
 
 const search = async (request, response, next) => {
-    const {[responseContainerField]: responseContainer} = response;
+    const { [requestParamsField]: requestParams, [requestTokenInfoContainerField]: tokenExtraInfo } = request;
+    const { [responseContainerField]: responseContainer } = response;
+    const { id: userIdFromToken } = tokenExtraInfo;
     let isNeedSaveToDatabase = false;
     try {
         const form = new formidable.IncomingForm();
@@ -23,9 +25,9 @@ const search = async (request, response, next) => {
                     reject(err);
                 } else {
                     // 生成文件名、保存路径等信息
-                    console.log('files----', files)
-                    const time = moment().format('YYYYMMDDHHmmss');
-                    let { path: saveFolder, uploaderId, type, save } = fields;
+                    const time = dayjs().format('YYYYMMDDHHmmss');
+                    let { path: saveFolder, type, save, fileName: customFileName, tags = '' } = fields;
+                    console.log('tags ------------------', tags, fields)
                     isNeedSaveToDatabase = !!save;
                     request[requestParamsField] = fields;
                     saveFolder = saveFolder ? `/${saveFolder}` : '';
@@ -39,10 +41,11 @@ const search = async (request, response, next) => {
                         if(err) reject(err);
                         else {
                             const fileInfo = {
-                                fileName,
+                                fileName: customFileName || fileName,
                                 url: `${request.headers.origin}${globalConfig.serverReadUploadFileRootFolder}${saveFolder}/${fileName}`,
-                                uploaderId,
-                                type
+                                uploaderId: userIdFromToken,
+                                type,
+                                tags
                             };
                             resolve(fileInfo);
                         }
@@ -50,12 +53,7 @@ const search = async (request, response, next) => {
                 }
             })
         });
-        const dataToInsert = {
-            fileName: fileInfo.fileName,
-            url: fileInfo.url,
-            uploaderId: fileInfo.uploaderId,
-            type: fileInfo.type
-        };
+        const dataToInsert = fileInfo;
         let insertResult;
         if (isNeedSaveToDatabase) insertResult = await mySQL.insertThenBackId(tableNames.uploadFile, dataToInsert);
         responseContainer.status = 200;

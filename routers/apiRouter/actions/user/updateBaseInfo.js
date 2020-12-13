@@ -6,19 +6,17 @@ import { extractFieldsAsAObject } from '../../../utilities/serverUtilities';
 const updateBaseInfo = async(request, response, next) => {
     const { [requestParamsField]: requestParams } = request;
     const { [responseContainerField]: responseContainer } = response;
-    const fields = ['userId', 'userName', 'introduction'];
+    const fields = ['userId', 'userName', 'introduction', 'albumDicId'];
     const queryObject = extractFieldsAsAObject(requestParams, fields);
     try {
-        const { userId, userName, introduction } = queryObject;
+        const { userId, ...updateFields } = queryObject;
+        const { userName, introduction } = updateFields;
         // 更新用户表
         const updateResult = await mySQL.updateItem(tableNames.user, {
             fields: {
                 id: userId
             },
-        }, {
-            userName,
-            introduction
-        });
+        }, updateFields);
         // 更新文章表
         if (userName) {
             await mySQL.updateGroup(tableNames.article, {
