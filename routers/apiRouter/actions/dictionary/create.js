@@ -8,7 +8,7 @@ const create = async (request, response, next) => {
     const { [requestParamsField]: requestParams, [requestTokenInfoContainerField]: tokenExtraInfo } = request;
     const { [responseContainerField]: responseContainer } = response;
     const { id: userIdFromToken } = tokenExtraInfo;
-    const fields = ['name', 'sign', 'description'];
+    const fields = ['name', 'sign', 'description', 'isPublic'];
     try {
         const dataToInsert = extractFieldsAsAObject(requestParams, fields);
         dataToInsert.userId = userIdFromToken;

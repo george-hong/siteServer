@@ -54,7 +54,7 @@ const setApplicationRouter = app => {
   app.all('*', setAppAllowCrossOrigin)
   app.use(apiRouter);
   app.use(history(historyConfig));
-  app.use(express.static(path.join(__dirname, './app')));  // 静态资源
+  app.use(express.static(path.join(__dirname, '../app')));  // 静态资源
 }
 
 export const runProdServer = () => {

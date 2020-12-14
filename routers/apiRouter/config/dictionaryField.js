@@ -9,7 +9,7 @@ const routerConfig = {
     },
     '/list': { // 获取字典字段列表
         method: 'get',
-        actions: ['dictionaryField/list'],
+        actions: ['base/checkTokenParseInfo', 'dictionaryField/list'],
     },
     '/delete': { // 删除字典字段
         method: 'post',

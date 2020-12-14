@@ -1,16 +1,20 @@
 import mySQL from '../../../../mySQL/index';
 import { tableNames } from '../../../../mySQL/config';
-import { requestParamsField, responseContainerField } from '../../fieldConfig';
-import { extractFieldsAsAObject } from '../../../utilities/serverUtilities';
+import { requestParamsField, requestTokenInfoContainerField, responseContainerField } from '../../fieldConfig';
+import { extractFieldsAsAObject, throwErrorMessageOnResponse } from '../../../utilities/serverUtilities';
 
 const queryDictionaryFieldList = async (request, response, next) => {
-    const { [requestParamsField]: requestParams } = request;
+    const { [requestParamsField]: requestParams, [requestTokenInfoContainerField]: tokenExtraInfo } = request;
     const { [responseContainerField]: responseContainer } = response;
     const fields = ['dicId', 'page', 'pageSize', 'status'];
     const queryObject = extractFieldsAsAObject(requestParams, fields);
+    const { id: userIdFromToken } = tokenExtraInfo;
     try {
         const { dicId, page, pageSize, status } = queryObject;
         const searchCondition = { page, pageSize };
+        const dictionaryInfo = await mySQL.queryItem(tableNames.dictionary, { fields: { id: dicId } }, 'userId,isPublic');
+        if (!dictionaryInfo || !dictionaryInfo.length) throwErrorMessageOnResponse(response, '没有相关字段信息');
+        if ((dictionaryInfo[0].isPublic === '0') && (dictionaryInfo[0].userId !== userIdFromToken)) throwErrorMessageOnResponse(response, '该字典内容不公开');
         const fields = [];
         // 过滤字段状态
         fields.push({
