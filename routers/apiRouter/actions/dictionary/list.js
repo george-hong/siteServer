@@ -9,8 +9,8 @@ const queryDictionaryList = async (request, response, next) => {
     const fields = ['page', 'pageSize', 'keyword', 'status'];
     const queryObject = extractFieldsAsAObject(requestParams, fields);
     try {
-        const { page, pageSize, keyword, status } = queryObject;
-        const searchCondition = { page, pageSize };
+        const { page, pageSize, keyword } = queryObject;
+        const searchCondition = { page, pageSize, order: 'updateTime' };
         const fields = [];
         // 如果有搜索关键字
         if (keyword) {

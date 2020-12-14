@@ -60,6 +60,21 @@ export const extractFieldsAsAObject = (object, fields) => {
     });
     return result;
 };
+// 抽取对象中的一部分字段生成一个新对象
+// object 需要抽取字段的对象
+// fields {Array, String} 需要抽取的字段，如果是String则以逗号分隔
+export const extractFieldsAsAObjectDeleteEmpty = (object, fields) => {
+    const result = {};
+    let fieldsArr = fields;
+    if (typeof fields === 'string') {
+        fieldsArr = fields.split(',');
+    }
+    fieldsArr.forEach(fieldName => {
+        const value = object[fieldName];
+        if (value !== '' && value !== undefined) result[fieldName] = value;
+    });
+    return result;
+};
 /**
  * 在响应体上生成错误信息及错误编码
  * @param response {Object} 响应载体
@@ -79,6 +94,7 @@ export const dealCatchError = error => {
 module.exports = {
     createResponseData,
     extractFieldsAsAObject,
+    extractFieldsAsAObjectDeleteEmpty,
     dealCatchError,
     throwErrorMessageOnResponse
 };

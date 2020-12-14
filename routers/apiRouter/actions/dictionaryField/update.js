@@ -1,14 +1,14 @@
 import mySQL from '../../../../mySQL/index';
 import { tableNames } from '../../../../mySQL/config';
 import { requestParamsField, requestTokenInfoContainerField, responseContainerField } from '../../fieldConfig';
-import { extractFieldsAsAObject, throwErrorMessageOnResponse } from '../../../utilities/serverUtilities';
+import { extractFieldsAsAObjectDeleteEmpty, throwErrorMessageOnResponse } from '../../../utilities/serverUtilities';
 
 const deleteDictionaryField = async (request, response, next) => {
     const { [requestParamsField]: requestParams, [requestTokenInfoContainerField]: tokenExtraInfo } = request;
     const { [responseContainerField]: responseContainer } = response;
     const { id: userIdFromToken } = tokenExtraInfo;
-    const fields = ['id', 'fieldName', 'fieldExtraCode', 'remark'];
-    const fullParams = extractFieldsAsAObject(requestParams, fields);
+    const fields = ['id', 'fieldName', 'fieldExtraCode', 'weight', 'remark'];
+    const fullParams = extractFieldsAsAObjectDeleteEmpty(requestParams, fields);
     try {
         const { id, ...updateInfo } = fullParams;
         const dataToUpdate = { ...updateInfo };

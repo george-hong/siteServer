@@ -11,7 +11,7 @@ const queryDictionaryFieldList = async (request, response, next) => {
     const { id: userIdFromToken } = tokenExtraInfo;
     try {
         const { dicId, page, pageSize, status } = queryObject;
-        const searchCondition = { page, pageSize };
+        const searchCondition = { page, pageSize, order: 'weight' };
         const dictionaryInfo = await mySQL.queryItem(tableNames.dictionary, { fields: { id: dicId } }, 'userId,isPublic');
         if (!dictionaryInfo || !dictionaryInfo.length) throwErrorMessageOnResponse(response, '没有相关字段信息');
         if ((dictionaryInfo[0].isPublic === '0') && (dictionaryInfo[0].userId !== userIdFromToken)) throwErrorMessageOnResponse(response, '该字典内容不公开');
