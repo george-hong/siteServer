@@ -7,7 +7,7 @@ const deleteDictionaryField = async (request, response, next) => {
     const { [requestParamsField]: requestParams, [requestTokenInfoContainerField]: tokenExtraInfo } = request;
     const { [responseContainerField]: responseContainer } = response;
     const { id: userIdFromToken } = tokenExtraInfo;
-    const fields = ['id', 'fieldName', 'fieldCode', 'fieldExtraCode', 'remark'];
+    const fields = ['id', 'fieldName', 'fieldExtraCode', 'remark'];
     const fullParams = extractFieldsAsAObject(requestParams, fields);
     try {
         const { id, ...updateInfo } = fullParams;
