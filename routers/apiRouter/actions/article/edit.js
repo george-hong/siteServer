@@ -2,6 +2,7 @@ import mySQL from '../../../../mySQL/index';
 import { tableNames } from '../../../../mySQL/config';
 import { requestParamsField, requestTokenInfoContainerField, responseContainerField } from '../../fieldConfig';
 import { extractFieldsAsAObject, throwErrorMessageOnResponse } from '../../../utilities/serverUtilities';
+import { encodeQuotationMarks } from '../../../utilities/methods';
 
 const editArticle = async (request, response, next) => {
     const { [requestParamsField]: requestParams, [requestTokenInfoContainerField]: tokenExtraInfo } = request;
@@ -25,6 +26,8 @@ const editArticle = async (request, response, next) => {
         // 编辑
         const updateFields = ['title', 'content'];
         const dataToUpdate = extractFieldsAsAObject(requestParams, updateFields);
+        // 转换单引号
+        dataToUpdate.content = encodeQuotationMarks(dataToUpdate.content);
         dataToUpdate.updateTime = Date.now().valueOf();
         try {
             const oldArticleItem = await mySQL.queryItem(tableNames.article, { fields: { id: fullParams.id } }, 'authorId');

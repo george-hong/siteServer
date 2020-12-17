@@ -72,15 +72,27 @@ export const getRandomCharts = length => {
             resultList.push(chartList[randomIndex]);
         });
     return resultList.join('');
-}
+};
 
-const isEmptyField = value => {
+export const isEmptyField = value => {
     return (value === '') || (value === undefined);
-}
+};
 
 const methods = {
     getRandomCharts,
     isEmptyField
+};
+
+export const encodeQuotationMarks = (string, transformDouble = false) => {
+    const str1 = string.replace(/\'/g, '&#39');
+    if (transformDouble) return str1.replace(/\"/g, '&#34');
+    return str1;
+};
+
+export const decodeQuotationMarks = (string, transformDouble = false) => {
+    const str1 = string.replace(/&#39/g, "'");
+    if (transformDouble) return str1.replace(/&#34/g, '"');
+    return str1;
 };
 
 export default methods;
