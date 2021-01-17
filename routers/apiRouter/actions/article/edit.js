@@ -8,7 +8,7 @@ const editArticle = async (request, response, next) => {
     const { [requestParamsField]: requestParams, [requestTokenInfoContainerField]: tokenExtraInfo } = request;
     const { [responseContainerField]: responseContainer } = response;
     const { id: userIdFromToken } = tokenExtraInfo;
-    const fields = ['title', 'content', 'author', 'id'];
+    const fields = ['title', 'content', 'author', 'category', 'id'];
     const fullParams = extractFieldsAsAObject(requestParams, fields);
     if (fullParams.id === undefined) {
         // 新增
@@ -24,7 +24,7 @@ const editArticle = async (request, response, next) => {
         }
     } else {
         // 编辑
-        const updateFields = ['title', 'content'];
+        const updateFields = ['title', 'content', 'category'];
         const dataToUpdate = extractFieldsAsAObject(requestParams, updateFields);
         // 转换单引号
         dataToUpdate.content = encodeQuotationMarks(dataToUpdate.content);
